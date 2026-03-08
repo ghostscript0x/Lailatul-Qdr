@@ -172,3 +172,38 @@ body {
 }
 
 /* End header visibility fixes --------------------------------------------------- */
+
+/* Reduce header / navbar size -------------------------------------------------- */
+/* Overrides to make the top header more compact across pages */
+.header-section {
+    padding: 0.6rem 0 !important;
+    min-height: auto !important;
+}
+
+.header-section img {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.header-section h1 {
+    font-size: 1rem !important;
+    margin-bottom: 0 !important;
+}
+
+.header-section p {
+    font-size: 0.85rem !important;
+}
+
+.header-section .btn,
+.header-section .btn-outline-light,
+.header-section .btn-night {
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.85rem !important;
+}
+
+@media (min-width: 992px) {
+    .header-section { padding: 0.75rem 0 !important; }
+    .header-section h1 { font-size: 1.25rem !important; }
+}
+
+/* End reduce header/navbar size ----------------------------------------------- */
