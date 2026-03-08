@@ -1,0 +1,174 @@
+/* Custom Styles for Laylatul Qadr Web App */
+
+/* Base Styles */
+:root {
+    --primary: #1A237E;
+    --primary-light: #303F9F;
+    --primary-dark: #0D1642;
+    --accent: #FFD700;
+    --accent-light: #FFF8E1;
+    --background: #FAFAFA;
+}
+
+body {
+    font-family: 'Poppins', 'Nunito', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Arabic Text */
+.font-arabic {
+    font-family: 'Amiri', 'Scheherazade', serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-light);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+    animation: slideIn 0.5s ease-out forwards;
+}
+
+/* Staggered animations for cards */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Card hover effects */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Gold glow for odd nights */
+.gold-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+.input-field:focus,
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+    }
+    
+    .night-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Header / Navbar visibility fixes ------------------------------------------------- */
+/* Ensure page headers stay above background art and remain readable */
+.header-section {
+    position: sticky;
+    top: 0;
+    z-index: 9999; /* keep header above decorative elements */
+    -webkit-backdrop-filter: saturate(120%) blur(6px);
+    backdrop-filter: saturate(120%) blur(6px);
+}
+
+.header-section h1,
+.header-section p,
+.header-section .btn,
+.header-section .btn-outline-light,
+.header-section .night-badge {
+    text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+}
+
+/* Slight translucent intention banner on top of patterned header */
+.header-section .intention-banner {
+    background: rgba(0,0,0,0.06);
+}
+
+@media (max-width: 768px) {
+    .header-section { padding: 1rem 0; }
+}
+
+/* End header visibility fixes --------------------------------------------------- */

@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+
+{% block title %}Your 10-Night Plan - Laylatul Qadr{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #1A237E;
+        --primary-light: #303F9F;
+        --accent: #FFD700;
+        --accent-light: #FFF8E1;
+        --cream: #FFFDE7;
+    }
+    
+    body {
+        background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+        min-height: 100vh;
+    }
+    
+    .header-section {
+        background: linear-gradient(135deg, var(--primary) 0%, #4A148C 100%);
+        padding: 2rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .night-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        height: 100%;
+    }
+    
+    .night-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    }
+    
+    .night-card.odd {
+        background: linear-gradient(135deg, var(--cream) 0%, #FFFEF0 100%);
+        border: 2px solid var(--accent);
+    }
+    
+    .night-card.odd::before {
+        content: '★';
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        color: var(--accent);
+        font-size: 1.5rem;
+        animation: pulse-gold 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-gold {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.2); opacity: 0.8; }
+    }
+    
+    .night-badge {
+        background: var(--primary);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+    }
+    
+    .night-badge.odd {
+        background: linear-gradient(135deg, var(--accent) 0%, #FFC107 100%);
+        color: var(--primary);
+    }
+    
+    .section-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #9E9E9E;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    
+    .section-value {
+        font-size: 0.9rem;
+        color: #424242;
+        line-height: 1.5;
+    }
+    
+    .dua-box {
+        background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        border-left: 4px solid var(--primary);
+    }
+    
+    .night-card.odd .dua-box {
+        background: linear-gradient(135deg, #FFFEF0 0%, #FFF8E1 100%);
+        border-left-color: var(--accent);
+    }
+    
+    .btn-night {
+        background: var(--primary);
+        color: white;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-night:hover {
+        background: var(--primary-light);
+        color: white;
+        transform: scale(1.05);
+    }
+    
+    .btn-night.odd {
+        background: var(--accent);
+        color: var(--primary);
+    }
+    
+    .btn-night.odd:hover {
+        background: #FFC107;
+    }
+    
+    .intention-banner {
+        background: rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .intention-banner p {
+        color: rgba(255,255,255,0.9);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+    
+    .intention-banner .label {
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .islamic-pattern {
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .night-card {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .night-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    
+    .night-card.odd::before {
+        background: linear-gradient(90deg, var(--accent), #FFC107, var(--accent));
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Header with Islamic Pattern -->
+<header class="header-section islamic-pattern">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <img src="{{ url_for('static', filename='moon.png') }}" alt="Laylatul Qadr Logo" width="50" height="50" class="rounded-circle">
+                <div>
+                    <h1 class="h3 fw-bold text-white mb-1">
+                        Your 10-Night Plan
+                    </h1>
+                    <p class="text-white-50 mb-0 small">Ramadan 1447 • March 10-19, 2026</p>
+                </div>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <button onclick="sharePlan()" class="btn btn-outline-light rounded-pill">
+                    <i class="bi bi-share me-2"></i>Share
+                </button>
+                <!-- <a href="{{ url_for('download_pdf') }}" class="btn" style="background: var(--accent); color: var(--primary); border-radius: 50px;">
+                    <i class="bi bi-download me-2"></i>PDF
+                </a> -->
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light rounded-pill">
+                    <i class="bi bi-plus-circle me-2"></i>New
+                </a>
+            </div>
+        </div>
+        
+        {% if user_intention %}
+        <div class="intention-banner">
+            <span class="label">Your Intention:</span>
+            <p class="mb-0">{{ user_intention }}</p>
+            {% if praying_for %}
+            <p class="mb-0 mt-2"><span class="label">Praying for:</span> {{ praying_for }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">Last 10 Nights of Ramadan</h2>
+        <p class="text-muted">Each night card contains your personalized dua, recommended worship, and guidance</p>
+        <div class="d-flex justify-content-center gap-3 mt-3">
+            <span class="badge bg-secondary px-3 py-2 rounded-pill">
+                <i class="bi bi-circle me-1"></i>Even Nights
+            </span>
+            <span class="badge" style="background: var(--accent); color: var(--primary);" class="px-3 py-2 rounded-pill">
+                <i class="bi bi-star-fill me-1"></i>Odd Nights (Likely Laylatul Qadr)
+            </span>
+        </div>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="container mb-4">
+        <div class="bg-white rounded-pill py-2 px-4 shadow-sm d-flex align-items-center justify-content-between">
+            <span class="text-muted small"><i class="bi bi-check-circle text-success me-2"></i>Your Progress</span>
+            <div class="d-flex gap-2">
+                {% for n in range(21, 31) %}
+                <div class="text-center">
+                    <input class="form-check-input" type="checkbox" id="night-{{ n }}" onchange="toggleNight({{ n }})">
+                    <label for="night-{{ n }}" class="small text-muted">{{ n }}</label>
+                </div>
+                {% endfor %}
+            </div>
+            <span class="text-primary fw-bold" id="progressText">0/10</span>
+        </div>
+    </div>
+    
+    <!-- Night Cards Grid -->
+    <div class="row g-4">
+        {% for night_info in nights %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="night-card {% if night_info.is_odd %}odd{% endif %} p-4 position-relative">
+                <!-- Night Badge -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="night-badge {% if night_info.is_odd %}odd{% endif %}">
+                        🌙 Night {{ night_info.night }}
+                    </span>
+                    {% if night_info.is_odd %}
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-star-fill me-1"></i>Likely Qadr
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <!-- Date -->
+                <p class="text-muted mb-3 small">
+                    <i class="bi bi-calendar3 me-2"></i>{{ night_info.date }} • {{ night_info.day_name }}
+                </p>
+                
+                <!-- Recitation -->
+                <div class="mb-3">
+                    <div class="section-label">📖 Recommended Recitation</div>
+                    <div class="section-value">
+                        {% for surah in night_info.recitation %}
+                        <span class="d-inline-block bg-light rounded px-2 py-1 small me-1 mb-1">{{ surah }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Dhikr -->
+                <div class="mb-3">
+                    <div class="section-label">🔥 Dhikr</div>
+                    <div class="section-value">
+                        SubhanAllah {{ night_info.dhikr.subhanallah }}x • Alhamdullilah {{ night_info.dhikr.alhamdullilah }}x • Allahu Akbar {{ night_info.dhikr.allahu_akbar }}x
+                        {% if night_info.dhikr.astaghfirullah %}
+                        • Astaghfirullah {{ night_info.dhikr.astaghfirullah }}x
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Tahajjud -->
+                <div class="mb-3">
+                    <div class="section-label">💤 Tahajjud</div>
+                    <div class="section-value">{{ night_info.tahajjud }}</div>
+                </div>
+                
+                <!-- Personal Dua -->
+                <div class="mb-3">
+                    <div class="section-label">🤲 Your Personal Dua</div>
+                    <div class="dua-box">
+                        <p class="mb-0 small" style="font-style: italic;">{{ night_info.personal_dua }}</p>
+                    </div>
+                </div>
+                
+                <!-- Authentic Dua -->
+                <div class="mb-3">
+                    <div class="section-label">📿 Authentic Dua</div>
+                    <div class="section-value font-arabic" style="font-size: 1.1rem;">
+                        {{ night_info[' Dua'] }}
+                    </div>
+                </div>
+                
+                <!-- Worship Tip -->
+                <div class="mb-4">
+                    <div class="section-label">💡 Worship Tip</div>
+                    <div class="section-value small">
+                        {{ night_info.worship_tip }}
+                    </div>
+                </div>
+                
+                <!-- View Details Button -->
+                <a href="{{ url_for('night_detail', night_num=night_info.night) }}" class="btn btn-night {% if night_info.is_odd %}odd{% endif %} w-100">
+                    <i class="bi bi-compass me-2"></i>View Night Guide
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="py-4 text-center bg-white mt-5">
+    <p class="text-muted mb-0">
+        <i class="bi bi-moon-stars me-2"></i>
+        May Allah accept your worship on this blessed night • Ameen
+    </p>
+</footer>
+
+<script>
+function sharePlan() {
+    const shareData = {
+        title: 'Laylatul Qadr - My 10 Night Plan',
+        text: 'My personalized worship plan for the last 10 nights of Ramadan. May Allah accept our worship!',
+        url: window.location.origin
+    };
+    
+    if (navigator.share) {
+        navigator.share(shareData).then(() => {
+            console.log('Shared successfully');
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        navigator.clipboard.writeText(window.location.origin).then(() => {
+            alert('Link copied to clipboard!');
+        });
+    }
+}
+
+function toggleNight(night) {
+    let completed = JSON.parse(localStorage.getItem('completed_nights') || '[]');
+    const checkbox = document.getElementById('night-' + night);
+    
+    if (checkbox.checked) {
+        if (!completed.includes(night)) {
+            completed.push(night);
+        }
+    } else {
+        completed = completed.filter(n => n !== night);
+    }
+    
+    localStorage.setItem('completed_nights', JSON.stringify(completed));
+    updateProgress();
+}
+
+function updateProgress() {
+    const completed = JSON.parse(localStorage.getItem('completed_nights') || '[]');
+    document.getElementById('progressText').textContent = completed.length + '/10';
+}
+
+// Load initial progress
+document.addEventListener('DOMContentLoaded', function() {
+    updateProgress();
+    const completed = JSON.parse(localStorage.getItem('completed_nights') || '[]');
+    completed.forEach(night => {
+        const checkbox = document.getElementById('night-' + night);
+        if (checkbox) checkbox.checked = true;
+    });
+});
+</script>
+{% endblock %}

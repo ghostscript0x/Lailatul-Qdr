@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generating Your Plan... - Laylatul Qadr</title>
+    <meta name="description" content="Laylatul Qadr - Your personalized 10-night worship guide">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Laylatul Qadr - The Night of Power">
+    <meta property="og:description" content="Your personalized 10-night worship plan for Ramadan">
+    <meta property="og:image" content="{{ url_for('static', filename='moon.png', _external=True) }}">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='moon.png') }}">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#1A237E',
+                        'primary-light': '#303F9F',
+                        'accent': '#FFD700',
+                        'accent-light': '#FFF8E1',
+                    },
+                    fontFamily: {
+                        'english': ['Poppins', 'Nunito', 'sans-serif'],
+                        'arabic': ['Amiri', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Poppins', 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #1A237E 0%, #4A148C 50%, #1A237E 100%);
+            min-height: 100vh;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255, 215, 0, 0.2);
+            border-top-color: #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars" id="stars"></div>
+    
+    <div class="container py-5">
+        <div class="row min-vh-100 align-items-center justify-content-center">
+            <div class="col-lg-6 text-center">
+                <!-- Animated Moon -->
+                <div class="position-relative d-inline-block mb-4">
+                    <img src="{{ url_for('static', filename='moon.png') }}" 
+                         alt="Laylatul Qadr" 
+                         width="120" 
+                         height="120"
+                         class="rounded-circle floating">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 rounded-circle pulse-ring"
+                         style="background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);">
+                    </div>
+                </div>
+                
+                <h1 class="h2 fw-bold text-white mb-3">Generating Your Personalized Plan</h1>
+                <p class="text-white-50 mb-4">
+                    Creating unique duas for all 10 nights...<br>
+                    <small>This may take a few seconds</small>
+                </p>
+                
+                <!-- Loader -->
+                <div class="loader mx-auto mb-4"></div>
+                
+                <!-- Progress Dots -->
+                <div class="d-flex justify-content-center gap-2 mb-4">
+                    {% for night in range(21, 31) %}
+                    <div class="night-dot" id="dot-{{ night }}" 
+                         style="width: 12px; height: 12px; background: rgba(255,255,255,0.3); border-radius: 50%;">
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Cancel Link -->
+                <a href="{{ url_for('index') }}" class="text-white-50 small">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Generate stars
+        document.addEventListener('DOMContentLoaded', function() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+            
+            // Auto-submit after page loads (starts the AI generation)
+            setTimeout(() => {
+                fetch('{{ url_for("generate_plan") }}', {
+                    method: 'POST'
+                }).then(() => {
+                    window.location.href = '{{ url_for("plan") }}';
+                });
+            }, 500);
+        });
+        
+        // Simulate progress
+        let progress = 21;
+        const interval = setInterval(() => {
+            if (progress <= 30) {
+                const dot = document.getElementById('dot-' + progress);
+                if (dot) {
+                    dot.style.background = '#FFD700';
+                    dot.style.boxShadow = '0 0 10px #FFD700';
+                }
+                progress++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 1500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block title %}Night {{ night }} - Laylatul Qadr{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #1A237E;
+        --primary-light: #303F9F;
+        --accent: #FFD700;
+        --accent-light: #FFF8E1;
+    }
+    
+    body {
+        background: linear-gradient(180deg, #FAFAFA 0%, #F0F0F0 100%);
+        min-height: 100vh;
+    }
+    
+    .header-section {
+        background: linear-gradient(135deg, var(--primary) 0%, #4A148C 100%);
+        padding: 1.5rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    
+    .qadr-alert {
+        background: linear-gradient(135deg, var(--accent) 0%, #FFC107 100%);
+        color: var(--primary);
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+    
+    .step-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border-left: 5px solid var(--primary);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .step-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    
+    .step-card.active {
+        border-left-color: var(--accent);
+        background: linear-gradient(135deg, #FFFEF0 0%, #FFF8E1 100%);
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    
+    .step-card.active .step-number {
+        background: var(--accent);
+        color: var(--primary);
+    }
+    
+    .step-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary);
+    }
+    
+    .step-description {
+        color: #616161;
+        line-height: 1.6;
+    }
+    
+    .dua-display {
+        background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border: 2px dashed var(--primary);
+    }
+    
+    .step-card.active .dua-display {
+        background: white;
+        border-color: var(--accent);
+    }
+    
+    .arabic-text {
+        font-family: 'Amiri', 'Scheherazade', serif;
+        font-size: 1.4rem;
+        text-align: right;
+        direction: rtl;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+    }
+    
+    .transliteration {
+        font-style: italic;
+        color: #757575;
+        font-size: 0.95rem;
+    }
+    
+    .journal-section {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .journal-textarea {
+        border: 2px solid #E0E0E0;
+        border-radius: 12px;
+        padding: 1rem;
+        width: 100%;
+        min-height: 150px;
+        font-family: inherit;
+        resize: vertical;
+    }
+    
+    .journal-textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+    
+    .btn-save {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-save:hover {
+        background: var(--primary-light);
+    }
+    
+    .btn-copy {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-copy:hover {
+        background: var(--primary);
+        color: white;
+    }
+    
+    .back-btn {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 8px 20px;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .back-btn:hover {
+        background: white;
+        color: var(--primary);
+    }
+    
+    .worship-tip {
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .progress-bar-custom {
+        height: 8px;
+        background: #E0E0E0;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Header -->
+<header class="header-section">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{{ url_for('plan') }}" class="back-btn">
+                <i class="bi bi-arrow-left me-2"></i>Back to Plan
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <h1 class="h4 fw-bold text-white mb-0">
+                        Night {{ night }}
+                    </h1>
+                    <p class="text-white-50 small mb-0">{{ date_info.date }}</p>
+                </div>
+                <img src="{{ url_for('static', filename='moon.png') }}" alt="Logo" width="40" height="40" class="rounded-circle">
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="container py-5">
+    {% if night_info.is_odd %}
+    <div class="qadr-alert">
+        <i class="bi bi-stars me-2"></i>
+        Tonight might be Laylatul Qadr! The reward of worship tonight is like worshipping for a thousand months!
+    </div>
+    {% endif %}
+    
+    <!-- Progress -->
+    <div class="progress-bar-custom">
+        <div class="progress-fill" style="width: 0%;" id="progressBar"></div>
+    </div>
+    
+    <!-- Night Info -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">{{ night_info.title }}</h2>
+        <p class="text-muted">{{ night_info.recitation_benefit }}</p>
+    </div>
+    
+    <!-- User's Intention -->
+    {% if user_intention %}
+    <div class="text-center mb-4">
+        <div class="d-inline-block bg-light rounded px-4 py-2">
+            <small class="text-muted d-block">Your Intention:</small>
+            <strong class="text-primary">{{ user_intention }}</strong>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Worship Steps -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            {% for step in worship_steps %}
+            <div class="step-card {% if loop.index == 1 %}active{% endif %}" id="step-{{ loop.index }}" onclick="setActiveStep({{ loop.index }})">
+                <div class="d-flex align-items-start">
+                    <div class="step-number me-3">{{ loop.index }}</div>
+                    <div class="flex-grow-1">
+                        <h4 class="step-title">{{ step.title }}</h4>
+                        <p class="step-description mb-2">{{ step.description }}</p>
+                        
+                        {% if step.benefit %}
+                        <div class="worship-tip small">
+                            <i class="bi bi-lightbulb me-2"></i>{{ step.benefit }}
+                        </div>
+                        {% endif %}
+                        
+                        {% if step.dua %}
+                        <div class="dua-display">
+                            <div class="arabic-text">{{ step.dua }}</div>
+                            {% if step.is_personal %}
+                            <p class="mb-2 text-primary fw-semibold">Your Personal Dua:</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Dua Journal -->
+    <div class="journal-section">
+        <h4 class="fw-bold text-primary mb-3">
+            <i class="bi bi-journal-bookmark me-2"></i>Dua Journal
+        </h4>
+        <p class="text-muted mb-3">Write your personal reflections, additional duas, or notes from tonight's worship.</p>
+        <textarea class="journal-textarea" id="journalEntry" placeholder="Write your personal duas and reflections here..."></textarea>
+        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+            <span class="text-muted small">
+                <i class="bi bi-clock me-1"></i>Auto-saved to your browser
+            </span>
+            <div class="d-flex gap-2">
+                <button class="btn-copy" onclick="copyDua()">
+                    <i class="bi bi-clipboard me-2"></i>Copy Personal Dua
+                </button>
+                <button class="btn-save" onclick="saveJournal()">
+                    <i class="bi bi-save me-2"></i>Save Notes
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="text-center mt-5">
+        {% if night > 21 %}
+        <a href="{{ url_for('night_detail', night_num=night-1) }}" class="btn btn-outline-primary rounded-pill me-2">
+            <i class="bi bi-arrow-left me-2"></i>Previous Night
+        </a>
+        {% endif %}
+        
+        {% if night < 30 %}
+        <a href="{{ url_for('night_detail', night_num=night+1) }}" class="btn btn-primary rounded-pill">
+            Next Night<i class="bi bi-arrow-right ms-2"></i>
+        </a>
+        {% else %}
+        <a href="{{ url_for('plan') }}" class="btn btn-warning rounded-pill" style="background: var(--accent); color: var(--primary);">
+            <i class="bi bi-stars me-2"></i>Back to Plan
+        </a>
+        {% endif %}
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="py-4 text-center bg-white mt-5">
+    <p class="text-muted mb-0">
+        <i class="bi bi-moon-stars me-2"></i>
+        May Allah accept your worship • Ameen
+    </p>
+</footer>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = {{ worship_steps|length }};
+    const currentNight = {{ night }};
+    
+    function setActiveStep(stepNum) {
+        document.querySelectorAll('.step-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        document.getElementById('step-' + stepNum).classList.add('active');
+        currentStep = stepNum;
+        updateProgress();
+    }
+    
+    function updateProgress() {
+        const progress = (currentStep / totalSteps) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+    }
+    
+    // Initialize
+    updateProgress();
+    
+    // Load saved journal
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedContent = localStorage.getItem('journal_night_' + currentNight);
+        if (savedContent) {
+            document.getElementById('journalEntry').value = savedContent;
+        }
+    });
+    
+    function saveJournal() {
+        const content = document.getElementById('journalEntry').value;
+        localStorage.setItem('journal_night_' + currentNight, content);
+        alert('Notes saved successfully!');
+    }
+    
+    function copyDua() {
+        const personalDua = document.querySelector('#step-4 .arabic-text');
+        if (personalDua) {
+            navigator.clipboard.writeText(personalDua.textContent).then(() => {
+                alert('Dua copied to clipboard!');
+            });
+        }
+    }
+</script>
+{% endblock %}
