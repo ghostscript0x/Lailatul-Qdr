@@ -266,12 +266,17 @@
                 
                 <!-- Recitation -->
                 <div class="mb-3">
-                    <div class="section-label">📖 Recommended Recitation</div>
+                    <div class="section-label">📖 AI-Recommended Recitation</div>
                     <div class="section-value">
                         {% for surah in night_info.recitation %}
                         <span class="d-inline-block bg-light rounded px-2 py-1 small me-1 mb-1">{{ surah }}</span>
                         {% endfor %}
                     </div>
+                    {% if night_info.recitation_benefit %}
+                    <small class="text-muted d-block mt-1">
+                        <i class="bi bi-stars me-1"></i>{{ night_info.recitation_benefit }}
+                    </small>
+                    {% endif %}
                 </div>
                 
                 <!-- Dhikr -->

@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 import calendar
 from utils.dua_generator import generate_all_night_duas
 from utils.pdf_generator import generate_plan_pdf
+from utils.recitation_generator import generate_all_night_recitations
 
 app = Flask(__name__)
 app.config.from_object("config.Config")
@@ -247,8 +248,10 @@ def generate_plan():
         user_intention = "whatever goodness Allah wills for me"
 
     duas = generate_all_night_duas(user_intention, praying_for)
+    recitations = generate_all_night_recitations(user_intention)
 
     session["duas"] = duas
+    session["recitations"] = recitations
     session["dates"] = calculate_ramadan_dates()
 
     return redirect(url_for("plan"))
@@ -259,17 +262,29 @@ def plan():
     user_intention = session.get("user_intention", "")
     praying_for = session.get("praying_for", "")
     duas = session.get("duas", [])
+    recitations = session.get("recitations", [])
     dates = session.get("dates", [])
 
     if not duas:
         duas = generate_all_night_duas(user_intention, praying_for)
+        recitations = generate_all_night_recitations(user_intention)
         dates = calculate_ramadan_dates()
 
     night_plans = []
     for i, night in enumerate(range(21, 31)):
-        night_data = NIGHT_DATA[night]
+        night_data = NIGHT_DATA[night].copy()
         dua_data = duas[i] if i < len(duas) else {"dua": "", "is_odd": False}
         date_data = dates[i] if i < len(dates) else {"date": "", "is_odd": False}
+        rec_data = (
+            recitations[i]
+            if i < len(recitations)
+            else {"recitations": [], "benefit": ""}
+        )
+
+        night_data["recitation"] = [r["surah"] for r in rec_data.get("recitations", [])]
+        night_data["recitation_benefit"] = rec_data.get(
+            "benefit", night_data.get("recitation_benefit", "")
+        )
 
         night_plans.append(
             {
@@ -295,17 +310,29 @@ def download_pdf():
     user_intention = session.get("user_intention", "")
     praying_for = session.get("praying_for", "")
     duas = session.get("duas", [])
+    recitations = session.get("recitations", [])
     dates = session.get("dates", [])
 
     if not duas:
         duas = generate_all_night_duas(user_intention, praying_for)
+        recitations = generate_all_night_recitations(user_intention)
         dates = calculate_ramadan_dates()
 
     night_plans = []
     for i, night in enumerate(range(21, 31)):
-        night_data = NIGHT_DATA[night]
+        night_data = NIGHT_DATA[night].copy()
         dua_data = duas[i] if i < len(duas) else {"dua": "", "is_odd": False}
         date_data = dates[i] if i < len(dates) else {"date": "", "is_odd": False}
+        rec_data = (
+            recitations[i]
+            if i < len(recitations)
+            else {"recitations": [], "benefit": ""}
+        )
+
+        night_data["recitation"] = [r["surah"] for r in rec_data.get("recitations", [])]
+        night_data["recitation_benefit"] = rec_data.get(
+            "benefit", night_data.get("recitation_benefit", "")
+        )
 
         night_plans.append(
             {
@@ -335,6 +362,7 @@ def night_detail(night_num):
 
     user_intention = session.get("user_intention", "")
     duas = session.get("duas", [])
+    recitations = session.get("recitations", [])
 
     dua_data = None
     for dua in duas:
@@ -342,9 +370,23 @@ def night_detail(night_num):
             dua_data = dua
             break
 
-    night_data = NIGHT_DATA[night_num]
+    rec_data = None
+    for rec in recitations:
+        if rec["night"] == night_num:
+            rec_data = rec
+            break
+
+    night_data = NIGHT_DATA[night_num].copy()
+
+    if rec_data and rec_data.get("recitations"):
+        night_data["recitation"] = [r["surah"] for r in rec_data.get("recitations", [])]
+        night_data["recitation_benefit"] = rec_data.get(
+            "benefit", night_data.get("recitation_benefit", "")
+        )
+        night_data["recitation_details"] = rec_data.get("recitations", [])
+
     dates = calculate_ramadan_dates()
-    date_info = dates[night_num - 21]  # Index 0-9 for nights 21-30
+    date_info = dates[night_num - 21]
 
     worship_steps = [
         {
@@ -356,6 +398,7 @@ def night_detail(night_num):
             "title": "📖 Recite the Quran",
             "description": f"Recite: {', '.join(night_data['recitation'])}",
             "benefit": night_data["recitation_benefit"],
+            "recitations": night_data.get("recitation_details", []),
             "dua": None,
         },
         {

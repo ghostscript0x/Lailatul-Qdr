@@ -277,6 +277,19 @@
                         </div>
                         {% endif %}
                         
+                        {% if step.recitations %}
+                        <div class="mt-2">
+                            {% for rec in step.recitations %}
+                            <div class="d-inline-block bg-light rounded px-2 py-1 small me-1 mb-1">
+                                <strong>{{ rec.surah }}</strong>
+                                {% if rec.benefit %}
+                                <span class="text-muted">- {{ rec.benefit }}</span>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
                         {% if step.dua %}
                         <div class="dua-display">
                             <div class="arabic-text">{{ step.dua }}</div>
